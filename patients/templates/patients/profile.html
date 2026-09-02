@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль — VitalStep</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url("{% static 'patients/images/main_background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.692);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(9, 1, 79, 0.183);
+            width: 500px;
+            max-width: 100%;
+        }
+        h2 {
+            color: #195293;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .welcome {
+            text-align: center;
+            color: #0e3a6e;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+        }
+        .info {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 5px;
+            border-left: 4px solid #195293;
+        }
+        .info p {
+            margin: 8px 0;
+            color: #0e3a6e;
+        }
+        .info strong {
+            color: #0e3a6e;
+        }
+        .btn {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #195293;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0e3a6e;
+        }
+        .notice {
+            text-align: center;
+            color: #0e3a6e;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Личный кабинет</h2>
+        <p class="welcome">Добро пожаловать, <strong>{{ user.username }}</strong>!</p>
+        
+        {% if patient_profile %}
+            <div class="info">
+                <p><strong>Дата рождения:</strong> {{ patient_profile.date_of_birth }}</p>
+                <p><strong>Телефон:</strong> {{ patient_profile.phone }}</p>
+                <p><strong>Экстренный контакт:</strong> {{ patient_profile.emergency_contact_name }}</p>
+                <p><strong>Телефон контакта:</strong> {{ patient_profile.emergency_contact_phone }}</p>
+            </div>
+        {% else %}
+            <p class="notice">Профиль пациента ещё не заполнен. Обратитесь к врачу.</p>
+        {% endif %}
+        
+        <a href="{% url 'logout' %}" class="btn">Выйти</a>
+    </div>
+</body>
+</html>

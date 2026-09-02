@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalStep</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url("{% static 'patients/images/main_background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 64, 202, 0.158);
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+            padding: 40px;
+            max-width: 700px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 30px;
+            background: #195293;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #195293;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="content">
+        <h1>VitalStep</h1>
+        <p>Система удалённого мониторинга и сопровождения реабилитации пациентов после протезирования</p>
+        <a href="/admin" class="btn">Перейти в админку</a>
+    </div>
+</body>
+</html>
