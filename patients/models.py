@@ -54,7 +54,7 @@ class ProsthesisLog(models.Model):
     """Учёт времени ношения протеза"""
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, related_name='prosthesis_logs')
     date = models.DateField(verbose_name='Дата')
-    hours_worn = models.FloatField(verbose_name='Часы ношения')
+    minutes_worn = models.IntegerField(verbose_name='Минуты ношения')
     discomfort_level = models.IntegerField(
         choices=[(i, i) for i in range(1, 11)],
         blank=True,
@@ -68,3 +68,28 @@ class ProsthesisLog(models.Model):
 
     def __str__(self):
         return f"{self.patient} — {self.date}: {self.hours_worn} ч."
+    
+class Activity(models.Model):
+    """Собственная активность пациента"""
+    patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, related_name='activities')
+    name = models.CharField(max_length=200, verbose_name='Название активности')
+    duration = models.IntegerField(verbose_name='Длительность (минут)')
+    date = models.DateField(verbose_name='Дата')
+    notes = models.TextField(blank=True, null=True, verbose_name='Заметки')
+
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"{self.patient} — {self.name} ({self.date})"
+
+
+class EmergencyContact(models.Model):
+    """Экстренный контакт пациента"""
+    patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, related_name='emergency_contacts')
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    phone = models.CharField(max_length=20, verbose_name='Телефон')
+    relation = models.CharField(max_length=50, verbose_name='Кем приходится', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.phone})"
