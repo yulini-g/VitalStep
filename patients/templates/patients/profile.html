@@ -25,7 +25,7 @@
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(9, 1, 79, 0.183);
-            width: 500px;
+            width: 600px;
             max-width: 100%;
         }
         h2 {
@@ -35,7 +35,7 @@
         }
         .welcome {
             text-align: center;
-            color: #0e3a6e;
+            color: #195293;
             margin-bottom: 25px;
             font-size: 1.1em;
         }
@@ -48,28 +48,54 @@
         }
         .info p {
             margin: 8px 0;
-            color: #0e3a6e;
+            color: #333;
         }
         .info strong {
-            color: #0e3a6e;
+            color: #195293;
+        }
+        .contacts {
+            margin-bottom: 25px;
+        }
+        .contact-item {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
         }
         .btn {
-            display: block;
+            display: inline-block;
             text-align: center;
-            padding: 12px;
+            padding: 12px 20px;
             background: #195293;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            margin-top: 20px;
             transition: background 0.3s;
+            flex: 1;
+            min-width: 150px;
         }
         .btn:hover {
             background: #0e3a6e;
         }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #195293;
+            color: #195293;
+        }
+        .btn-outline:hover {
+            background: #195293;
+            color: white;
+        }
         .notice {
             text-align: center;
-            color: #0e3a6e;
+            color: #195293;
             font-style: normal;
         }
     </style>
@@ -78,19 +104,37 @@
     <div class="container">
         <h2>Личный кабинет</h2>
         <p class="welcome">Добро пожаловать, <strong>{{ user.username }}</strong>!</p>
-        
+
         {% if patient_profile %}
             <div class="info">
-                <p><strong>Дата рождения:</strong> {{ patient_profile.date_of_birth }}</p>
+                <p><strong>Дата рождения:</strong> {{ patient_profile.date_of_birth|date:'d.m.Y' }}</p>
                 <p><strong>Телефон:</strong> {{ patient_profile.phone }}</p>
-                <p><strong>Экстренный контакт:</strong> {{ patient_profile.emergency_contact_name }}</p>
-                <p><strong>Телефон контакта:</strong> {{ patient_profile.emergency_contact_phone }}</p>
+            </div>
+
+            <h3 style="color: #195293; margin-bottom: 10px;">Экстренные контакты</h3>
+            <div class="contacts">
+                {% for contact in emergency_contacts %}
+                    <div class="contact-item">
+                        <strong>{{ contact.name }}</strong> — {{ contact.phone }}
+                        {% if contact.relation %}({{ contact.relation }}){% endif %}
+                    </div>
+                {% empty %}
+                    <p class="notice">Контакты не добавлены.</p>
+                {% endfor %}
             </div>
         {% else %}
             <p class="notice">Профиль пациента ещё не заполнен. Обратитесь к врачу.</p>
         {% endif %}
-        
-        <a href="{% url 'logout' %}" class="btn">Выйти</a>
+
+        <div class="nav">
+            <a href="{% url 'activities' %}" class="btn">Мои активности</a>
+            <a href="{% url 'plan' %}" class="btn">План упражнений</a>
+            <a href="{% url 'prosthesis' %}" class="btn">Журнал протеза</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'logout' %}" class="btn btn-outline">Выйти</a>
+        </div>
     </div>
 </body>
 </html>

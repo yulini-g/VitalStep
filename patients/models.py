@@ -76,6 +76,11 @@ class Activity(models.Model):
     duration = models.IntegerField(verbose_name='Длительность (минут)')
     date = models.DateField(verbose_name='Дата')
     notes = models.TextField(blank=True, null=True, verbose_name='Заметки')
+    
+    class Meta:
+        verbose_name = 'Активность'
+        verbose_name_plural = 'Активности'
+        ordering = ['-date']
 
     class Meta:
         ordering = ['-date']

@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои активности — VitalStep</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url("{% static 'patients/images/main_background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.692);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(9, 1, 79, 0.183);
+            width: 600px;
+            max-width: 100%;
+        }
+        h2 {
+            color: #195293;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #195293;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #19529312;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border: 1px solid #19529366;
+            box-shadow: 0 0 5px rgba(25, 82, 147, 0.3);
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #195293;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #0e3a6e;
+        }
+        .activities-list {
+            margin-top: 30px;
+        }
+        .activity-item {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #195293;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Мои активности</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Добавить</button>
+        </form>
+
+        <div class="activities-list">
+            <h3 style="color: #195293;">История активностей</h3>
+            {% for activity in activities_list %}
+                <div class="activity-item">
+                    <strong>{{ activity.date|date:"d.m.Y" }}</strong> — {{ activity.name }} ({{ activity.duration }} мин.)
+                    {% if activity.notes %}<br><small>{{ activity.notes }}</small>{% endif %}
+                </div>
+            {% empty %}
+                <p style="color: #195293;">Пока нет добавленных активностей.</p>
+            {% endfor %}
+        </div>
+
+        <a href="{% url 'profile' %}" class="back">← Назад в профиль</a>
+    </div>
+</body>
+</html>
