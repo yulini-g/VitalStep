@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 class PatientProfile(models.Model):
     """Профиль пациента"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_profile')
+    first_name = models.CharField(max_length=50, blank=True, verbose_name='Имя')
+    last_name = models.CharField(max_length=50, blank=True, verbose_name='Фамилия')
+    middle_name = models.CharField(max_length=50, blank=True, verbose_name='Отчество')
     date_of_birth = models.DateField(verbose_name='Дата рождения')
     phone = models.CharField(max_length=20, verbose_name='Телефон')
     emergency_contact_name = models.CharField(max_length=100, verbose_name='Имя экстренного контакта')
@@ -67,7 +70,7 @@ class ProsthesisLog(models.Model):
         ordering = ['-date']
 
     def __str__(self):
-        return f"{self.patient} — {self.date}: {self.hours_worn} ч."
+        return f"{self.patient} — {self.date}: {self.minutes_worn} мин."
     
 class Activity(models.Model):
     """Собственная активность пациента"""
@@ -78,11 +81,8 @@ class Activity(models.Model):
     notes = models.TextField(blank=True, null=True, verbose_name='Заметки')
     
     class Meta:
-        verbose_name = 'Активность'
-        verbose_name_plural = 'Активности'
-        ordering = ['-date']
-
-    class Meta:
+        verbose_name = 'activity'
+        verbose_name_plural = 'activities'
         ordering = ['-date']
 
     def __str__(self):

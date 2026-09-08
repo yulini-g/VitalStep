@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <link rel="icon" type="image/png" href="{% static 'patients/images/favicon.png' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль — VitalStep</title>
@@ -103,10 +104,20 @@
 <body>
     <div class="container">
         <h2>Личный кабинет</h2>
-        <p class="welcome">Добро пожаловать, <strong>{{ user.username }}</strong>!</p>
+        <p class="welcome">
+            Добро пожаловать, <strong>
+            {% if patient_profile.first_name %}
+                {{ patient_profile.first_name }}
+                {% if patient_profile.middle_name %}{{ patient_profile.middle_name }}{% endif %}
+            {% else %}
+                {{ user.username }}
+            {% endif %}
+            </strong>!
+        </p>
 
         {% if patient_profile %}
             <div class="info">
+                <p><strong>ФИО:</strong> {{ patient_profile.last_name }} {{ patient_profile.first_name }} {{ patient_profile.middle_name }}</p>
                 <p><strong>Дата рождения:</strong> {{ patient_profile.date_of_birth|date:'d.m.Y' }}</p>
                 <p><strong>Телефон:</strong> {{ patient_profile.phone }}</p>
             </div>

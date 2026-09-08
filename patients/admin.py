@@ -3,8 +3,8 @@ from .models import PatientProfile, Exercise, DailyPlan, ProsthesisLog, Activity
 
 @admin.register(PatientProfile)
 class PatientProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date_of_birth', 'phone', 'emergency_contact_name')
-    search_fields = ('user__username', 'user__first_name', 'user__last_name')
+    list_display = ('user', 'last_name', 'first_name', 'middle_name', 'date_of_birth', 'phone')
+    search_fields = ('user__username', 'last_name', 'first_name', 'middle_name')
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
