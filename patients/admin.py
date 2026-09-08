@@ -8,8 +8,8 @@ class PatientProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'difficulty', 'video_url')
-    list_filter = ('difficulty',)
+    list_display = ('name', 'rehab_stage', 'video_url')
+    list_filter = ('rehab_stage',)
     search_fields = ('name', 'description')
 
 @admin.register(DailyPlan)

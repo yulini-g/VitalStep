@@ -133,7 +133,10 @@
         </div>
 
         <div style="text-align: center; margin-top: 20px;">
-            <a href="{% url 'logout' %}" class="btn btn-outline">Выйти</a>
+            <form method="post" action="{% url 'logout' %}" style="text-align: center; margin-top: 10px;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline">Выйти</button>
+            </form>
         </div>
     </div>
 </body>

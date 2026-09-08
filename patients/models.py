@@ -20,15 +20,15 @@ class Exercise(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     video_url = models.URLField(blank=True, null=True, verbose_name='Ссылка на видео')
-    difficulty = models.CharField(
+    rehab_stage = models.CharField(
         max_length=50,
         choices=[
-            ('easy', 'Лёгкое'),
-            ('medium', 'Среднее'),
-            ('hard', 'Сложное'),
+            ('early', 'Ранний'),
+            ('mid', 'Средний'),
+            ('late', 'Поздний'),
         ],
-        default='easy',
-        verbose_name='Сложность'
+        default='early',
+        verbose_name='Этап реабилитации'
     )
 
     def __str__(self):

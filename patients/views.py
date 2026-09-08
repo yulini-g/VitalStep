@@ -1,7 +1,8 @@
+from datetime import date
 from django.shortcuts import render, redirect
+from .forms import ActivityForm, ProsthesisLogForm
 from django.contrib.auth.decorators import login_required
-from .models import PatientProfile, Activity, EmergencyContact
-from .forms import ActivityForm
+from .models import PatientProfile, Activity, EmergencyContact, ProsthesisLog, DailyPlan
 
 def home(request):
     return render(request, 'patients/home.html')
@@ -45,8 +46,47 @@ def activities(request):
 
 @login_required
 def plan(request):
-    return render(request, 'patients/plan.html')
+    try:
+        patient_profile = request.user.patient_profile
+    except PatientProfile.DoesNotExist:
+        return redirect('profile')
+    
+    if request.method == 'POST':
+        plan_id = request.POST.get('plan_id')
+        try:
+            daily_plan = DailyPlan.objects.get(id=plan_id, patient=patient_profile)
+            daily_plan.is_done = True
+            daily_plan.save()
+        except DailyPlan.DoesNotExist:
+            pass
+        return redirect('plan')
+    
+    today_plans = DailyPlan.objects.filter(patient=patient_profile, date=date.today())
+
+    return render(request, 'patients/plan.html', {
+        'today_plans': today_plans,
+    })
 
 @login_required
 def prosthesis(request):
-    return render(request, 'patients/prosthesis.html')
+    try:
+        patient_profile = request.user.patient_profile
+    except PatientProfile.DoesNotExist:
+        return redirect('profile')
+
+    if request.method == 'POST':
+        form = ProsthesisLogForm(request.POST)
+        if form.is_valid():
+            log = form.save(commit=False)
+            log.patient = patient_profile
+            log.save()
+            return redirect('prosthesis')
+    else:
+        form = ProsthesisLogForm()
+
+    logs = ProsthesisLog.objects.filter(patient=patient_profile)
+
+    return render(request, 'patients/prosthesis.html', {
+        'form': form,
+        'logs': logs,
+    })

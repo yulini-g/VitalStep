@@ -1,12 +1,149 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>План упражнений — VitalStep</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url("{% static 'patients/images/main_background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.692);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(9, 1, 79, 0.183);
+            width: 600px;
+            max-width: 100%;
+        }
+        h2 {
+            color: #195293;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .plan-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid #195293;
+            color: #333;
+        }
+        .plan-item.done {
+            border-left-color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #195293;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .btn:hover {
+            background: #0e3a6e;
+        }
+        .done-label {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #195293;
+            text-decoration: none;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .tooltip-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: #195293;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 13px;
+            line-height: 18px;
+            margin-left: 5px;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            width: 280px;
+            background: #195293;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            position: absolute;
+            z-index: 10;
+            bottom: 130%;
+            left: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
-    <h1>План упражнений</h1>
-    <p>Страница в разработке</p>
-    <a href="/profile">Назад в профиль</a>
+    <div class="container">
+        <h2>План упражнений на сегодня</h2>
+
+        {% for plan_item in today_plans %}
+            <div class="plan-item {% if plan_item.is_done %}done{% endif %}">
+                <strong>{{ plan_item.exercise.name }}</strong>
+                <p>{{ plan_item.exercise.description }}</p>
+                {% if plan_item.exercise.video_url %}
+                    <p><a href="{{ plan_item.exercise.video_url }}" target="_blank">Видеоинструкция</a></p>
+                {% endif %}
+                    <p><small>Этап: {{ plan_item.exercise.get_rehab_stage_display }}
+                        <span class="tooltip">
+                            <span class="tooltip-icon">?</span>
+                            <span class="tooltip-text">
+                                <strong>Ранний этап</strong> — минимальная нагрузка, первые дни после протезирования.<br>
+                                <strong>Средний этап</strong> — умеренная нагрузка, активное восстановление.<br>
+                                <strong>Поздний этап</strong> — высокая нагрузка, закрепление навыков.
+                            </span>
+                        </span>
+                    </small></p>
+                {% if plan_item.is_done %}
+                    <span class="done-label">✓ Выполнено</span>
+                {% else %}
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="plan_id" value="{{ plan_item.id }}">
+                        <button type="submit" class="btn">Отметить выполненным</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p style="color: #195293;">На сегодня упражнения не назначены.</p>
+        {% endfor %}
+
+        <a href="{% url 'profile' %}" class="back">← Назад в профиль</a>
+    </div>
 </body>
 </html>
