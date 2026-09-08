@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прогресс — VitalStep</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url("{% static 'patients/images/main_background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.692);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(9, 1, 79, 0.183);
+            width: 600px;
+            max-width: 100%;
+        }
+        h2 {
+            color: #195293;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-direction: column;
+        }
+        .stat-box {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            text-align: center;
+            border-top: 4px solid #195293;
+        }
+        .stat-number {
+            font-size: 2em;
+            color: #195293;
+            font-weight: bold;
+        }
+        .stat-label {
+            color: #333;
+            font-size: 0.9em;
+        }
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #195293;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Прогресс реабилитации</h2>
+
+        <div class="stats" style="flex-direction: column;">
+            <div class="stat-box" style="width: 100%; max-width: 500px; margin: 0 auto;">
+                <div class="stat-number">{{ done_count }}</div>
+                <div class="stat-label">Выполнено упражнений</div>
+            </div>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                <div class="stat-box" style="width: 150px;">
+                    <div class="stat-number">{{ total_count }}</div>
+                    <div class="stat-label">Всего назначено</div>
+                </div>
+                <div class="stat-box" style="width: 150px;">
+                    <div class="stat-number">{{ logs|length }}</div>
+                    <div class="stat-label">Записей о протезе</div>
+                </div>
+                <div class="stat-box" style="width: 150px;">
+                    <div class="stat-number">{{ activities|length }}</div>
+                    <div class="stat-label">Активностей</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="{% url 'profile' %}" class="back">← Назад в профиль</a>
+    </div>
+</body>
+</html>

@@ -69,7 +69,10 @@
     <div class="content">
         <h1>VitalStep</h1>
         <p>Система удалённого мониторинга и сопровождения реабилитации пациентов после протезирования</p>
-        <a href="/admin" class="btn">Перейти в админку</a>
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <a href="{% url 'login' %}" class="btn" style="width: 180px;">Вход</a>
+            <a href="{% url 'register' %}" class="btn" style="width: 180px;">Регистрация</a>
+        </div>
     </div>
 </body>
 </html>

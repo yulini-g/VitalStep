@@ -1,6 +1,6 @@
 from datetime import date
 from django.shortcuts import render, redirect
-from .forms import ActivityForm, ProsthesisLogForm
+from .forms import ActivityForm, ProsthesisLogForm, UserRegisterForm
 from django.contrib.auth.decorators import login_required
 from .models import PatientProfile, Activity, EmergencyContact, ProsthesisLog, DailyPlan
 
@@ -90,3 +90,33 @@ def prosthesis(request):
         'form': form,
         'logs': logs,
     })
+    
+@login_required
+def progress(request):
+    try:
+        patient_profile = request.user.patient_profile
+    except PatientProfile.DoesNotExist:
+        return redirect('profile')
+
+    done_count = DailyPlan.objects.filter(patient=patient_profile, is_done=True).count()
+    total_count = DailyPlan.objects.filter(patient=patient_profile).count()
+
+    logs = ProsthesisLog.objects.filter(patient=patient_profile).order_by('date')
+    activities = Activity.objects.filter(patient=patient_profile).order_by('date')
+
+    return render(request, 'patients/progress.html', {
+        'done_count': done_count,
+        'total_count': total_count,
+        'logs': logs,
+        'activities': activities,
+    })
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'patients/register.html', {'form': form})
