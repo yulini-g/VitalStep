@@ -41,7 +41,7 @@
             margin-bottom: 20px;
         }
         .description {
-            color: #333;
+            color: #0d3c71;
             line-height: 1.6;
             margin-bottom: 20px;
             text-align: justify;
@@ -74,14 +74,20 @@
     <div class="container">
         <h2>{{ exercise.name }}</h2>
 
-        {% if exercise.image %}
-            <img src="{{ exercise.image.url }}" alt="{{ exercise.name }}" class="exercise-image">
-        {% endif %}
+        <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <p class="stage">Этап: {{ exercise.get_rehab_stage_display }}</p>
+                <div class="description">
+                    {{ exercise.description|linebreaks }}
+                </div>
+            </div>
 
-        <p class="stage">Этап: {{ exercise.get_rehab_stage_display }}</p>
-
-        <div class="description">
-            {{ exercise.description|linebreaks }}
+            {% if exercise.image %}
+                <div style="flex: 1; min-width: 250px; text-align: center;">
+                    <img src="{{ exercise.image.url }}" alt="{{ exercise.name }}" 
+                        style="width: 70%; max-width: 300px;  border-color: #99b9dd; border-width: 2px; border-radius: 30px; object-fit: cover; border-style:solid;">
+                </div>
+            {% endif %}
         </div>
 
         {% if exercise.video_url %}
