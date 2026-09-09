@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ActivityForm, ProsthesisLogForm, UserRegisterForm
 from django.contrib.auth.decorators import login_required
@@ -50,7 +50,13 @@ def plan(request):
         patient_profile = request.user.patient_profile
     except PatientProfile.DoesNotExist:
         return redirect('profile')
-    
+
+    selected_date = request.GET.get('date')
+    if selected_date:
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+    else:
+        selected_date = date.today()
+
     if request.method == 'POST':
         plan_id = request.POST.get('plan_id')
         try:
@@ -59,12 +65,32 @@ def plan(request):
             daily_plan.save()
         except DailyPlan.DoesNotExist:
             pass
-        return redirect('plan')
-    
-    today_plans = DailyPlan.objects.filter(patient=patient_profile, date=date.today())
+        return redirect(f'/plan/?date={selected_date}')
+
+    today = date.today()
+    plans = DailyPlan.objects.filter(
+        patient=patient_profile,
+        date__lte=selected_date,
+        end_date__gte=selected_date,
+    ) | DailyPlan.objects.filter(
+        patient=patient_profile,
+        date=selected_date,
+        end_date__isnull=True,
+    )
+
+    if selected_date == today:
+        header = 'План упражнений на сегодня'
+    elif selected_date == today - timedelta(days=1):
+        header = 'План упражнений на вчера'
+    elif selected_date == today + timedelta(days=1):
+        header = 'План упражнений на завтра'
+    else:
+        header = f'План упражнений на {selected_date.strftime("%d.%m.%y")}'
 
     return render(request, 'patients/plan.html', {
-        'today_plans': today_plans,
+        'plans': plans,
+        'header': header,
+        'selected_date': selected_date.strftime('%Y-%m-%d'),
     })
 
 @login_required

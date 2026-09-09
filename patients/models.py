@@ -44,8 +44,11 @@ class DailyPlan(models.Model):
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, related_name='daily_plans')
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     date = models.DateField(verbose_name='Дата')
+    end_date = models.DateField(blank=True, null=True, verbose_name='Дата окончания')
     is_done = models.BooleanField(default=False, verbose_name='Выполнено')
     notes = models.TextField(blank=True, null=True, verbose_name='Заметки')
+    repetitions = models.IntegerField(blank=True, null=True, verbose_name='Количество повторений')
+    duration_minutes = models.IntegerField(blank=True, null=True, verbose_name='Длительность (минут)')
 
     class Meta:
         unique_together = ['patient', 'exercise', 'date']
