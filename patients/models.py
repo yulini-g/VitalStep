@@ -23,6 +23,7 @@ class Exercise(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название')
     description = models.TextField(verbose_name='Описание')
     video_url = models.URLField(blank=True, null=True, verbose_name='Ссылка на видео')
+    image = models.ImageField(upload_to='exercises/', blank=True, null=True, verbose_name='Фото упражнения')
     rehab_stage = models.CharField(
         max_length=50,
         choices=[

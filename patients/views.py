@@ -1,8 +1,8 @@
 from datetime import date
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ActivityForm, ProsthesisLogForm, UserRegisterForm
 from django.contrib.auth.decorators import login_required
-from .models import PatientProfile, Activity, EmergencyContact, ProsthesisLog, DailyPlan
+from .models import PatientProfile, Activity, EmergencyContact, ProsthesisLog, DailyPlan, Exercise
 
 def home(request):
     return render(request, 'patients/home.html')
@@ -120,3 +120,7 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'patients/register.html', {'form': form})
+
+def exercise_detail(request, exercise_id):
+    exercise = get_object_or_404(Exercise, id=exercise_id)
+    return render(request, 'patients/exercise_detail.html', {'exercise': exercise})

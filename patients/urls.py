@@ -12,4 +12,5 @@ urlpatterns = [
     path('prosthesis/', views.prosthesis, name='prosthesis'),
     path('progress/', views.progress, name='progress'),
     path('register/', views.register, name='register'),
+    path('exercise/<int:exercise_id>/', views.exercise_detail, name='exercise_detail'),
 ]
