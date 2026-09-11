@@ -14,8 +14,8 @@ class ExerciseAdmin(admin.ModelAdmin):
 
 @admin.register(DailyPlan)
 class DailyPlanAdmin(admin.ModelAdmin):
-    list_display = ('patient', 'exercise', 'date', 'end_date', 'repetitions', 'duration_minutes', 'is_done')    
-    list_filter = ('is_done', 'date')
+    list_display = ('patient', 'exercise', 'date', 'end_date', 'repetitions', 'duration_minutes')    
+    list_filter = ('date',)
     search_fields = ('patient__user__username', 'exercise__name')
 
 @admin.register(ProsthesisLog)

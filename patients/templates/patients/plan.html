@@ -114,20 +114,19 @@
         <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; position: relative;">
             <h2 style="margin: 0;">{{ header }}</h2>
             <div style="position: relative;">
-                <img src="{% static 'patients/images/calendar-icon.png' %}" alt="Календарь" 
-                    style="width: 25px; height: 25px; cursor: pointer;" 
-                    onclick="document.getElementById('date-input').showPicker()">
-                <input id="date-input" type="date" name="date" value="{{ selected_date }}" 
-                    onchange="this.form.submit()" 
-                    style="position: absolute; top: 0; left: 0; opacity: 0; width: 25px; height: 25px; pointer-events: none;">
+                <form method="get" style="margin: 0; position: relative;">
+                    <img src="{% static 'patients/images/calendar-icon.png' %}" alt="Календарь"
+                        style="width: 25px; height: 25px; cursor: pointer; display: block;"
+                        onclick="const el = document.getElementById('date-input'); if (el.showPicker) { el.showPicker(); } else { el.click(); el.focus(); }">
+                    <input id="date-input" type="date" name="date" value="{{ selected_date }}"
+                        onchange="this.form.submit()"
+                        style="position: absolute; top: 0; left: 0; opacity: 0; width: 25px; height: 25px; pointer-events: none;">
+                </form>
             </div>
-            <form method="get" style="display: none;">
-                <input type="hidden" name="date" id="hidden-date-input">
-            </form>
         </div>
 
         {% for plan_item in plans %}
-            <div class="plan-item {% if plan_item.is_done %}done{% endif %}">
+            <div class="plan-item {% if plan_item.is_done_today %}done{% endif %}">
                 <strong>
                     <a href="{% url 'exercise_detail' plan_item.exercise.id %}" style="color: #195293; text-decoration: none;">
                         {{ plan_item.exercise.name }}
@@ -153,12 +152,19 @@
                             </span>
                         </span>
                     </small></p>
-                {% if plan_item.is_done %}
+                {% if plan_item.is_done_today %}
                     <span class="done-label">✓ Выполнено</span>
+                    <form method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="plan_id" value="{{ plan_item.id }}">
+                        <input type="hidden" name="action" value="uncomplete">
+                        <button type="submit" class="btn" style="background:#195293;">Отменить</button>
+                    </form>
                 {% else %}
                     <form method="post" style="display: inline;">
                         {% csrf_token %}
                         <input type="hidden" name="plan_id" value="{{ plan_item.id }}">
+                        <input type="hidden" name="action" value="complete">
                         <button type="submit" class="btn">Отметить выполненным</button>
                     </form>
                 {% endif %}

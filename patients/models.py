@@ -38,14 +38,12 @@ class Exercise(models.Model):
     def __str__(self):
         return self.name
 
-
 class DailyPlan(models.Model):
     """План упражнений на день"""
     patient = models.ForeignKey(PatientProfile, on_delete=models.CASCADE, related_name='daily_plans')
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     date = models.DateField(verbose_name='Дата')
     end_date = models.DateField(blank=True, null=True, verbose_name='Дата окончания')
-    is_done = models.BooleanField(default=False, verbose_name='Выполнено')
     notes = models.TextField(blank=True, null=True, verbose_name='Заметки')
     repetitions = models.IntegerField(blank=True, null=True, verbose_name='Количество повторений')
     duration_minutes = models.IntegerField(blank=True, null=True, verbose_name='Длительность (минут)')
@@ -55,6 +53,16 @@ class DailyPlan(models.Model):
 
     def __str__(self):
         return f"{self.patient} — {self.exercise} ({self.date})"
+
+
+class IsDone(models.Model):
+    """Булевое значение выполнения одного упражнения в рамках одного дня"""
+    daily_plan = models.ForeignKey(DailyPlan, on_delete=models.CASCADE, related_name='completions')
+    date = models.DateField()
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('daily_plan', 'date')
 
 
 class ProsthesisLog(models.Model):

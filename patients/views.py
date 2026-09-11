@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ActivityForm, ProsthesisLogForm, UserRegisterForm
 from django.contrib.auth.decorators import login_required
-from .models import PatientProfile, Activity, EmergencyContact, ProsthesisLog, DailyPlan, Exercise
+from .models import PatientProfile, Activity, EmergencyContact, ProsthesisLog, DailyPlan, Exercise, IsDone
 
 def home(request):
     return render(request, 'patients/home.html')
@@ -59,13 +59,22 @@ def plan(request):
 
     if request.method == 'POST':
         plan_id = request.POST.get('plan_id')
-        try:
-            daily_plan = DailyPlan.objects.get(id=plan_id, patient=patient_profile)
-            daily_plan.is_done = True
-            daily_plan.save()
-        except DailyPlan.DoesNotExist:
-            pass
-        return redirect(f'/plan/?date={selected_date}')
+        action = request.POST.get('action', 'complete')
+
+        daily_plan = DailyPlan.objects.filter(id=plan_id, patient=patient_profile).first()
+        if daily_plan:
+            if action == 'complete':
+                IsDone.objects.get_or_create(
+                    daily_plan=daily_plan,
+                    date=selected_date,
+                )
+            elif action == 'uncomplete':
+                IsDone.objects.filter(
+                    daily_plan=daily_plan,
+                    date=selected_date,
+                ).delete()
+
+        return redirect(f'/plan/?date={selected_date.isoformat()}')
 
     today = date.today()
     plans = DailyPlan.objects.filter(
@@ -77,6 +86,15 @@ def plan(request):
         date=selected_date,
         end_date__isnull=True,
     )
+
+    done_ids = set(
+        IsDone.objects
+        .filter(date=selected_date, daily_plan__in=plans)
+        .values_list('daily_plan_id', flat=True)
+    )
+
+    for p in plans:
+        p.is_done_today = p.id in done_ids
 
     if selected_date == today:
         header = 'План упражнений на сегодня'
@@ -116,7 +134,7 @@ def prosthesis(request):
         'form': form,
         'logs': logs,
     })
-    
+
 @login_required
 def progress(request):
     try:
@@ -124,7 +142,7 @@ def progress(request):
     except PatientProfile.DoesNotExist:
         return redirect('profile')
 
-    done_count = DailyPlan.objects.filter(patient=patient_profile, is_done=True).count()
+    done_count = IsDone.objects.filter(daily_plan__patient=patient_profile).count()
     total_count = DailyPlan.objects.filter(patient=patient_profile).count()
 
     logs = ProsthesisLog.objects.filter(patient=patient_profile).order_by('date')
